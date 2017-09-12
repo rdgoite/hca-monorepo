@@ -13,9 +13,9 @@ import os, sys
 import logging
 import json
 
-DEFAULT_RABBIT_URL=os.path.expandvars(os.environ.get('RABBIT_URL', 'amqp://localhost:5672'))
+DEFAULT_RABBIT_URL=os.environ.get('RABBIT_URL', 'amqp://localhost:5672')
+DEFAULT_INGEST_URL=os.environ.get('INGEST_API', 'http://localhost:8080')
 DEFAULT_QUEUE_NAME=os.path.expandvars(os.environ.get('SUBMISSION_QUEUE_NAME', 'ingest.envelope.submitted.queue'))
-
 class IngestReceiver:
     def __init__(self, options={}):
 
