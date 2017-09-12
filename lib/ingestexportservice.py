@@ -10,12 +10,14 @@ import logging
 import ingestapi
 import json
 
+DEFAULT_INGEST_URL=os.path.expandvars(os.environ.get('INGEST_API', 'http://localhost:8080'))
+
 class IngestExporter:
     def __init__(self):
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         logging.basicConfig(formatter=formatter)
         self.logger = logging.getLogger(__name__)
-        self.ingest_api = None
+        self.ingest_api = ingestapi.IngestApi(url=DEFAULT_INGEST_URL)
 
     def writeManifest(self, name, index, files):
         dir = os.path.abspath("bundles/" + name)
@@ -63,8 +65,6 @@ class IngestExporter:
         # given a sub envelope, generate bundles
 
         # read assays from ingest API
-        self.ingest_api = ingestapi.IngestApi()
-
         submissionUrl = self.ingest_api.getSubmissionUri(submissionId=submissionEnvelopeId)
         for index, assay in enumerate(self.ingest_api.getAssays(submissionUrl)):
 

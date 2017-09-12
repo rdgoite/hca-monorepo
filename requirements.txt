@@ -1,5 +1,4 @@
 openpyxl==2.4.8
 xlsxwriter==0.9.8
 requests
-flask
 pika

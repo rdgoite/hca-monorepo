@@ -7,16 +7,14 @@ __author__ = "jupp"
 __license__ = "Apache 2.0"
 
 import pika
-import ingestexportservice
-import ingestapi
+from lib import ingestexportservice
 from optparse import OptionParser
 import os, sys
 import logging
 import json
 
-DEFAULT_RABBIT_URL=os.environ.get('RABBIT_URL', 'amqp://localhost:5672')
-DEFAULT_INGEST_URL=os.environ.get('INGEST_API', 'http://localhost:8080')
-DEFAULT_QUEUE_NAME=os.environ.get('SUBMISSION_QUEUE_NAME', 'ingest.envelope.submitted.queue')
+DEFAULT_RABBIT_URL=os.path.expandvars(os.environ.get('RABBIT_URL', 'amqp://localhost:5672'))
+DEFAULT_QUEUE_NAME=os.path.expandvars(os.environ.get('SUBMISSION_QUEUE_NAME', 'ingest.envelope.submitted.queue'))
 
 class IngestReceiver:
     def __init__(self, options={}):
@@ -24,9 +22,6 @@ class IngestReceiver:
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         logging.basicConfig(level=options.log, formatter=formatter)
         self.logger = logging.getLogger(__name__)
-
-        self.ingestUrl = options.ingest if options.ingest else DEFAULT_INGEST_URL
-        self.logger.debug("ingest url is "+self.ingestUrl )
 
         self.rabbit = options.rabbit if options.rabbit else os.path.expandvars(DEFAULT_RABBIT_URL)
         self.logger.debug("rabbit url is "+self.rabbit )
@@ -43,7 +38,7 @@ class IngestReceiver:
             self.logger.info(" [x] Received %r" % body)
             submittedObject = json.loads(body)
             if "id" in submittedObject:
-                ingestExporter = broker.ingestexportservice.IngestExporter()
+                ingestExporter = lib.ingestexportservice.IngestExporter()
                 ingestExporter.generateBundles(submittedObject["id"])
 
         channel.basic_consume(callback,
