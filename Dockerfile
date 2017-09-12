@@ -2,8 +2,8 @@ FROM jfloff/alpine-python:2.7-slim
 MAINTAINER Simon Jupp "jupp@ebi.ac.uk"
 
 RUN mkdir /app
-COPY lib /app/lib
-COPY export-to-dss.py requirements.txt /app/
+ADD lib /app/lib
+ADD export-to-dss.py requirements.txt /app/
 WORKDIR /app
 
 RUN pip install -r /app/requirements.txt
