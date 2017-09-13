@@ -9,15 +9,16 @@ class AccessionProcessor:
     def run(self, message):
         params = json.loads(message)
         
-        accession_no = str(uuid.uuid4())
-        debug_message = 'New Accession Number {accession_no}'.format(accession_no=accession_no)
+        new_uuid = str(uuid.uuid4())
+        debug_message = 'New Accession Number {new_uuid}'.format(new_uuid=new_uuid)
         self.logger.info(debug_message)
         
         metadata_update = {}
-        metadata_update['accession'] = {}
-        metadata_update['accession']['number'] = accession_no
+        metadata_update['uuid'] = {}
+        metadata_update['uuid']['uuid'] = new_uuid
         
-        metadata_uuid = params['uuid']['uuid']
-        metadata_entity_type = params['entityType']
-        self.ingest_api.update_entity_by_uuid(metadata_entity_type, metadata_uuid, json.dumps(metadata_update))
-        self.logger.info('updated entity by uuid!')
+        entity_id = params['documentId']
+        entity_type = params['documentType']
+
+        self.ingest_api.update_entity(entity_type, entity_id, json.dumps(metadata_update))
+        self.logger.info('updated entity accession uuid!')

@@ -2,9 +2,9 @@ import glob, json, os, urllib, requests, logging
 import config
 
 ENTITY_TYPE_LINKS = {
-    "SAMPLE" : "samples",
-    "ASSAY" : "assays",
-    "ANALYSIS" : { "analysis"}
+    "sample" : "samples",
+    "assay" : "assays",
+    "analysis" : { "analysis"}
 }
 
 SEARCH_UUID_PATH = '/search/findByUuid?uuid='
@@ -26,10 +26,21 @@ class IngestApi:
             self.logger.error(str(r))
 
     def get_entity_url_by_uuid(self, entity_type, uuid):
-        metadata_type = ENTITY_TYPE_LINKS[entity_type]
-        entity_index_url = self.links[metadata_type]['href'].rsplit('{')[0]
+        entity_index_url = self.get_entity_index(entity_type)
         entity_find_by_uuid_url = entity_index_url + SEARCH_UUID_PATH + uuid
         entity_response = urllib.urlopen(entity_find_by_uuid_url)
         entity_url = json.load(entity_response)['_links']['self']['href']
         
         return entity_url
+
+    def get_entity_index_url(self, entity_type):
+        metadata_type = ENTITY_TYPE_LINKS[entity_type.lower()]
+        entity_index_url = self.links[metadata_type]['href'].rsplit('{')[0]
+        return entity_index_url
+
+    def update_entity(self, entity_type, entity_id, json_str):
+        entity_url = self.get_entity_index_url(entity_type) + '/' + entity_id
+        r = requests.patch(entity_url, data=json_str, headers=self.headers)
+        
+        if r.status_code != requests.codes.ok:
+            self.logger.error(str(r))
