@@ -6,7 +6,8 @@ ENTITY_TYPE_LINKS = {
     "assay" : "assays",
     "analysis" : "analyses",
     "file": "files",
-    "project":"projects"
+    "project":"projects",
+    "protocol": "protocols"
 }
 
 SEARCH_UUID_PATH = '/search/findByUuid?uuid='
@@ -16,6 +17,7 @@ class IngestApi:
     def __init__(self, ingest_url=None):
         reply = urllib.urlopen(ingest_url)
         self.links = json.load(reply)['_links']
+        self.ingest_url = ingest_url
         
         self.logger = logging.getLogger(__name__)
         self.headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
@@ -46,5 +48,4 @@ class IngestApi:
         
         if r.status_code != requests.codes.ok:
             self.logger.error(str(r))
-
     
