@@ -4,7 +4,9 @@ import config
 ENTITY_TYPE_LINKS = {
     "sample" : "samples",
     "assay" : "assays",
-    "analysis" : { "analysis"}
+    "analysis" : "analyses",
+    "file": "files",
+    "project":"projects"
 }
 
 SEARCH_UUID_PATH = '/search/findByUuid?uuid='
@@ -44,3 +46,5 @@ class IngestApi:
         
         if r.status_code != requests.codes.ok:
             self.logger.error(str(r))
+
+    
