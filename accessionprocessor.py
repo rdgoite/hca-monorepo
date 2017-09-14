@@ -1,4 +1,4 @@
-import pika, logging, uuid, json
+import pika, logging, uuid, json, time
 
 
 class AccessionProcessor:
@@ -23,6 +23,7 @@ class AccessionProcessor:
             entity_id = params['documentId']
             entity_type = params['documentType']
 
+            time.sleep(1)
             self.ingest_api.update_entity(entity_type, entity_id, json.dumps(metadata_update))
             self.logger.info('updated entity accession uuid!')
         else:
