@@ -44,9 +44,11 @@ class IngestReceiver:
                 ingestApi = ingestapi.IngestApi()
                 subUrl = ingestApi.getSubmissionUri(submissionId)
                 uuid = ingestApi.getObjectUuid(subUrl)
+                self.logger.info("Creating staging area for submission "+uuid)
                 stagingApi = stagingapi.StagingApi()
                 submissionCredentials = stagingApi.createStagingArea(uuid)
-                ingestApi.updateSubmissionWithStagingCredentials(subUrl, submissionCredentials)
+                self.logger.info("Staging created! patching creds to subs envelope "+submissionCredentials)
+                ingestApi.updateSubmissionWithStagingCredentials(subUrl,uuid, json.loads(submissionCredentials)["urn"])
 
         channel.basic_consume(callback,
                               queue=self.queue,

@@ -4,7 +4,7 @@ MAINTAINER Simon Jupp "jupp@ebi.ac.uk"
 RUN mkdir /app
 WORKDIR /app
 ADD ingestbroker ./lib
-COPY export-to-dss.py requirements.txt ./
+COPY staging-creator.py requirements.txt ./
 
 RUN pip install -r requirements.txt
 
