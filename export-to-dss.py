@@ -7,15 +7,16 @@ __author__ = "jupp"
 __license__ = "Apache 2.0"
 
 import pika
-from lib import ingestexportservice
+import ingestbroker.broker.ingestexportservice as ingestexport
+import ingestbroker.broker.ingestapi
 from optparse import OptionParser
 import os, sys
 import logging
 import json
 
 DEFAULT_RABBIT_URL=os.environ.get('RABBIT_URL', 'amqp://localhost:5672')
-DEFAULT_INGEST_URL=os.environ.get('INGEST_API', 'http://localhost:8080')
-DEFAULT_QUEUE_NAME=os.path.expandvars(os.environ.get('SUBMISSION_QUEUE_NAME', 'ingest.envelope.submitted.queue'))
+DEFAULT_QUEUE_NAME=os.environ.get('SUBMISSION_QUEUE_NAME', 'ingest.envelope.submitted.queue')
+
 class IngestReceiver:
     def __init__(self, options={}):
 
@@ -38,7 +39,7 @@ class IngestReceiver:
             self.logger.info(" [x] Received %r" % body)
             submittedObject = json.loads(body)
             if "id" in submittedObject:
-                ingestExporter = lib.ingestexportservice.IngestExporter()
+                ingestExporter = ingestexportservice.IngestExporter()
                 ingestExporter.generateBundles(submittedObject["id"])
 
         channel.basic_consume(callback,
@@ -55,9 +56,6 @@ if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option("-q", "--queue", help="name of the ingest queues to listen for submission")
     parser.add_option("-r", "--rabbit", help="the URL to the Rabbit MQ messaging server")
-    parser.add_option("-i", "--ingest", help="the URL to the ingest API")
-    parser.add_option("-s", "--staging", help="the URL to the staging API")
-    parser.add_option("-d", "--dss", help="the URL to the datastore service")
     parser.add_option("-l", "--log", help="the logging level", default='INFO')
 
     (options, args) = parser.parse_args()
