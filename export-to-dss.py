@@ -8,7 +8,6 @@ __license__ = "Apache 2.0"
 
 import pika
 import ingestbroker.broker.ingestexportservice as ingestexportservice
-import ingestbroker.broker.ingestapi
 from optparse import OptionParser
 import os, sys
 import logging
