@@ -3,7 +3,7 @@ MAINTAINER Simon Jupp "jupp@ebi.ac.uk"
 
 RUN mkdir /app
 WORKDIR /app
-ADD ingestbroker ./lib
+ADD ingestbroker ./ingestbroker
 COPY export-to-dss.py requirements.txt ./
 
 RUN pip install -r requirements.txt
