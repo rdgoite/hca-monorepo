@@ -7,7 +7,7 @@ __author__ = "jupp"
 __license__ = "Apache 2.0"
 
 import pika
-import ingestbroker.broker.ingestexportservice as ingestexport
+import ingestbroker.broker.ingestexportservice as ingestexportservice
 import ingestbroker.broker.ingestapi
 from optparse import OptionParser
 import os, sys
@@ -39,8 +39,11 @@ class IngestReceiver:
             self.logger.info(" [x] Received %r" % body)
             submittedObject = json.loads(body)
             if "id" in submittedObject:
-                ingestExporter = ingestexportservice.IngestExporter()
-                ingestExporter.generateBundles(submittedObject["id"])
+                try:
+                    ingestExporter = ingestexportservice.IngestExporter()
+                    ingestExporter.generateBundles(submittedObject["id"])
+                except Exception, e:
+                    self.logger.error("Failed to export to dss: "+submittedObject["id"]+ ", error:"+str(e))
 
         channel.basic_consume(callback,
                               queue=self.queue,
