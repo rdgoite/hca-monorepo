@@ -11,6 +11,7 @@ RUN pip install -r requirements.txt
 ENV INGEST_API=http://localhost:8080
 ENV RABBIT_URL=amqp://localhost:5672
 ENV SUBMISSION_QUEUE_NAME=ingest.envelope.submitted.queue
+ENV DSS_API=http://dss.dev.data.humancellatlas.org
 
 ENTRYPOINT ["python"]
 CMD ["export-to-dss.py"]
