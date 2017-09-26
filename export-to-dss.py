@@ -40,9 +40,9 @@ class IngestReceiver:
             if "id" in submittedObject:
                 try:
                     ingestExporter = ingestexportservice.IngestExporter()
-                    ingestExporter.generateBundles(submittedObject["id"])
+                    ingestExporter.generateBundles(submittedObject["documentId"])
                 except Exception, e:
-                    self.logger.error("Failed to export to dss: "+submittedObject["id"]+ ", error:"+str(e))
+                    self.logger.error("Failed to export to dss: "+submittedObject["documentId"]+ ", error:"+str(e))
 
         channel.basic_consume(callback,
                               queue=self.queue,
