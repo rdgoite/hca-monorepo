@@ -39,8 +39,8 @@ class IngestReceiver:
         def callback(ch, method, properties, body):
             self.logger.info(" [x] Received %r" % body)
             submittedObject = json.loads(body)
-            if "id" in submittedObject:
-                submissionId = submittedObject["id"]
+            if "documentId" in submittedObject:
+                submissionId = submittedObject["documentId"]
                 ingestApi = ingestapi.IngestApi()
                 subUrl = ingestApi.getSubmissionUri(submissionId)
                 uuid = ingestApi.getObjectUuid(subUrl)
