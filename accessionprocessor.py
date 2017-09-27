@@ -1,7 +1,9 @@
-import pika, logging, uuid, json, time
+import logging, uuid, json, time
+
 
 
 class AccessionProcessor:
+
     def __init__(self, ingest_api):
         self.ingest_api = ingest_api
         self.logger = logging.getLogger(__name__)
@@ -22,9 +24,13 @@ class AccessionProcessor:
             
             entity_id = params['documentId']
             entity_type = params['documentType']
+            entity_link = params['callbackLink']
 
             time.sleep(1)
-            self.ingest_api.update_entity(entity_type, entity_id, json.dumps(metadata_update))
-            self.logger.info('updated entity accession uuid!')
+
+            if(self.ingest_api.update_entity_if_match(entity_link, json.dumps(metadata_update))):
+                self.logger.info('updated entity accession uuid!')
+
+
         else:
             self.logger.info('no update')
