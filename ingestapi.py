@@ -64,19 +64,26 @@ class IngestApi:
             entity_response = requests.get(entity_url)
             etag = entity_response.headers['ETag']
 
-            if(etag):
-                self.headers['If-Match'] = etag
+            # recheck the response doesn't have a uuid
+            metadata_uuid = json.loads(entity_response.text)['uuid']
+            if not metadata_uuid:
+                if etag:
+                    self.headers['If-Match'] = etag
 
-            self.logger.debug(self.headers)
+                self.logger.debug(self.headers)
 
-            entity_update_response = requests.patch(entity_url, data=json_str, headers=self.headers)
+                entity_update_response = requests.patch(entity_url, data=json_str, headers=self.headers)
 
-            if entity_update_response.status_code != requests.codes.ok:
-                self.logger.error(str(entity_update_response))
-                retries +=1
-                self.logger.info('retries: ' + str(retries))
+                if entity_update_response.status_code != requests.codes.ok:
+                    self.logger.error(str(entity_update_response))
+                    retries +=1
+                    self.logger.info('retries: ' + str(retries))
+                else:
+                    updated = True
+                    break
             else:
-                updated = True
+                self.logger.info('Target document ' + str(entity_path) + ' already has UUID, ignoring')
+                updated = False
                 break
 
         return updated
