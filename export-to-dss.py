@@ -37,7 +37,7 @@ class IngestReceiver:
         def callback(ch, method, properties, body):
             self.logger.info(" [x] Received %r" % body)
             submittedObject = json.loads(body)
-            if "id" in submittedObject:
+            if "documentId" in submittedObject:
                 try:
                     ingestExporter = ingestexportservice.IngestExporter()
                     ingestExporter.generateBundles(submittedObject["documentId"])
