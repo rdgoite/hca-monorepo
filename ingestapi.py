@@ -1,4 +1,4 @@
-import json, urllib, requests, logging, urlparse
+import json, urllib, requests, logging, urlparse, time
 
 ENTITY_TYPE_LINKS = {
     "sample": "samples",
@@ -68,6 +68,7 @@ class IngestApi:
 
                 self.logger.debug(self.headers)
 
+                time.sleep(1)
                 entity_update_response = requests.patch(entity_url, data=json_str, headers=self.headers)
 
                 if entity_update_response.status_code != requests.codes.ok:
