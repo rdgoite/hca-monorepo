@@ -1,4 +1,3 @@
 [submodule "ingest-broker"]
 	path = ingestbroker
 	url = git@github.com:HumanCellAtlas/ingest-broker.git
-	branch = "HCA-123_content-type-to-dss"
