@@ -40,7 +40,9 @@ class IngestReceiver:
             if "documentId" in submittedObject:
                 try:
                     ingestExporter = ingestexportservice.IngestExporter()
+                    ingestExporter.processSubmission(submittedObject["documentId"])
                     ingestExporter.generateBundles(submittedObject["documentId"])
+                    ingestExporter.completeSubmission(submittedObject["documentId"])
                 except Exception, e:
                     self.logger.error("Failed to export to dss: "+submittedObject["documentId"]+ ", error:"+str(e))
 
