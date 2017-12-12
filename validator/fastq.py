@@ -36,7 +36,6 @@ class Validator:
         return ValidationReport.validation_report_ok() if valid \
         else ValidationReport("INVALID")
 
-
     def _validate_record(self, record):
         valid_identifier = self._validate_identifier_line(record[0])
         valid_bases = self._validate_bases(record[1])
