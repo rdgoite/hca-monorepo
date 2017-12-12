@@ -29,6 +29,7 @@ class TestFastqScript(TestCase):
 
             # and:
             stdout_value = mock_stdout.getvalue().strip()
+            assert stdout_value
             json_output = json.loads(stdout_value)
             self.assertEqual("VALID", json_output["validation_state"])
 
@@ -42,7 +43,14 @@ class TestFastqScript(TestCase):
 
             # when:
             path_to_file = "path/to/file.fastq"
-            fastq.executeOn(path_to_file)
+            with patch('sys.stdout', new=StringIO()) as mock_stdout:
+                fastq.executeOn(path_to_file)
 
             # then:
             validator.validate.assert_called_once_with(path_to_file)
+
+            # and:
+            stdout_value = mock_stdout.getvalue().strip()
+            assert stdout_value
+            json_output = json.loads(stdout_value)
+            self.assertEqual("INVALID", json_output["validation_state"])
