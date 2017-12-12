@@ -8,5 +8,5 @@ class Fastq:
 
     def executeOn(self, file_path):
         report = self.validator.validate(file_path)
-        report_map = {'validation_state': report.validation_state}
-        print(json.dumps(report_map))
+        json_value = json.dumps(report.__dict__)
+        print(json_value)
