@@ -1,3 +1,5 @@
+import gzip
+
 from common.validationreport import ValidationReport
 
 
@@ -16,23 +18,30 @@ class Validator:
             self.quality_score_symbols.append(ord(symbol))
 
     def validate(self, file_path):
+        try:
+            with gzip.open(file_path) as source:
+                return self._validate_source_bytes(source)
+        except OSError:
+            with open(file_path, 'rb') as source:
+                return self._validate_source_bytes(source)
+
+    def _validate_source_bytes(self, source):
         valid = True
-        with open(file_path, 'rb') as source:
-            record = list()
-            for line in source:
-                if not valid:
-                    break
-                line = line.rstrip()
-                line_is_not_empty = line # added for readability
-                if line_is_not_empty:
-                    record.append(line)
-                    record_is_ready = len(record) == 4
-                    if record_is_ready:
-                        valid = valid and self._validate_record(record)
-                        record.clear()
-                else:
-                    valid = False
-            valid = valid and len(record) == 0
+        record = list()
+        for line in source:
+            if not valid:
+                break
+            line = line.rstrip()
+            line_is_not_empty = line  # added for readability
+            if line_is_not_empty:
+                record.append(line)
+                record_is_ready = len(record) == 4
+                if record_is_ready:
+                    valid = valid and self._validate_record(record)
+                    record.clear()
+            else:
+                valid = False
+        valid = valid and len(record) == 0
         return ValidationReport.validation_report_ok() if valid \
         else ValidationReport("INVALID")
 
