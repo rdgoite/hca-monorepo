@@ -1,3 +1,3 @@
-#!/usr/bin/sh
+#!/bin/sh
 
 python /opt/fastq-validator/fastq.py $1
