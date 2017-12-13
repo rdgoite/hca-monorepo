@@ -1,3 +1,5 @@
+import gzip
+
 from common.validationreport import ValidationReport
 
 
@@ -17,7 +19,7 @@ class Validator:
 
     def validate(self, file_path):
         valid = True
-        with open(file_path, 'rb') as source:
+        with gzip.open(file_path, 'rb') as source:
             record = list()
             for line in source:
                 if not valid:
