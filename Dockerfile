@@ -1,23 +1,9 @@
-FROM python:3.6.3-alpine
-MAINTAINER Alegria Aclan "aaclan@ebi.ac.uk"
+FROM humancellatlas/upload-validator-base-alpine
 
-RUN mkdir /app
-COPY config.py messagereceiver.py validationprocessor.py ingestapi.py validation-app.py requirements.txt /app/
-ADD validator /app/validator
-ADD common /app/common
-ADD ontologyvalidator /app/ontologyvalidator
-ADD schemavalidator /app/schemavalidator
+RUN mkdir -p /opt/fastq-validator/common /opt/fastq-validator/validator
+COPY common/*.py /opt/fastq-validator/common/
+COPY validator/*.py /opt/fastq-validator/validator/
+COPY script/fastq.py /opt/fastq-validator/
 
-
-WORKDIR /app
-
-RUN pip install -r /app/requirements.txt
-
-ENV INGEST_API=http://localhost:8080
-ENV ONTOLOGY_SCHEMA_BASE_URL=https://github.com/HumanCellAtlas/metadata-schema/tree/4.2.0/json_schema/ontology_json
-ENV JSON_SCHEMA_VALIDATION=ACTIVE
-ENV OLS_VALIDATION=ACTIVE
-
-EXPOSE 5000
-ENTRYPOINT ["python"]
-CMD ["validation-app.py"]
+COPY validator.sh /validator
+RUN chmod +x /validator

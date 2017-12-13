@@ -62,16 +62,27 @@ class TestFastqFileValidation(unittest.TestCase):
     def test_validates_spacing_on_multiple_records(self):
         self._do_test_validate_as_invalid('multiple_invalid-spacing')
 
+    # compressed files
+
+    def test_validates_compressed_files(self):
+        self._do_test_validate_as_valid('single_valid', 'gz')
+
     # test templates
 
-    def _do_test_validate_as_valid(self, test_data):
-        self._do_test_validate(test_data, self.assertTrue)
+    def _do_test_validate_as_valid(self, test_data, extension=None):
+        assert_valid = lambda result:\
+            self.assertEqual("VALID", result.validation_state)
+        self._do_test_validate(test_data, assert_valid, extension)
 
     def _do_test_validate_as_invalid(self, test_data):
-        self._do_test_validate(test_data, self.assertFalse)
+        assert_invalid = lambda result:\
+            self.assertEqual("INVALID", result.validation_state)
+        self._do_test_validate(test_data, assert_invalid)
 
-    def _do_test_validate(self, test_data, assertion):
+    def _do_test_validate(self, test_data, assertion, extension=None):
         file_name = "%s.fastq" % (test_data)
         file_path = os.path.join(BASE_DIR, 'test_files', 'fastq', file_name) # $BASE_DIR/test_files/fastq/<file_name>
+        if extension:
+            file_path = "%s.%s" % (file_path, extension)
         results = self.validator.validate(os.path.abspath(file_path))
         assertion(results)
