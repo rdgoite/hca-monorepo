@@ -19,8 +19,6 @@ DEFAULT_QUEUE_NAME=os.environ.get('SUBMISSION_QUEUE_NAME', 'ingest.envelope.subm
 class IngestReceiver:
     def __init__(self, options={}):
 
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        logging.basicConfig(level=options.log, formatter=formatter)
         self.logger = logging.getLogger(__name__)
 
         self.rabbit = options.rabbit if options.rabbit else os.path.expandvars(DEFAULT_RABBIT_URL)
@@ -55,7 +53,8 @@ class IngestReceiver:
 
 
 if __name__ == '__main__':
-    logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+    format = ' %(asctime)s  - %(name)s - %(levelname)s in %(filename)s:%(lineno)s %(funcName)s(): %(message)s'
+    logging.basicConfig(stream=sys.stdout, level=logging.INFO, format=format)
 
     parser = OptionParser()
     parser.add_option("-q", "--queue", help="name of the ingest queues to listen for submission")
