@@ -12,10 +12,7 @@ class Validator:
         self.sequence_symbols = list()
         for symbol in "ACTGN.":
             self.sequence_symbols.append(ord(symbol))
-        self.quality_score_symbols = list()
-        for symbol in "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ\
-            [\]^_`abcdefghijklmnopqrstuvwxyz{|}~":
-            self.quality_score_symbols.append(ord(symbol))
+
 
     def validate(self, file_path):
         try:
@@ -82,8 +79,8 @@ class Validator:
 
     def _validate_quality_scores(self, line):
         for symbol in line:
-            if symbol not in self.quality_score_symbols:
-                return False;
+            if not (33 <= symbol <= 126):
+                return False
         return True
 
     def _validate_bases_length_equals_qc_length(self, base_line, qc_line):
