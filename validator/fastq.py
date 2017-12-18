@@ -37,6 +37,8 @@ class Validator:
                 if record_is_ready:
                     valid = valid and self._validate_record(record)
                     record.clear()
+                    if not valid:
+                        report.log_error("")
             else:
                 valid = False
         if len(record) != 0:

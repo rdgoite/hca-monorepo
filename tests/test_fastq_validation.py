@@ -17,7 +17,11 @@ class TestFastqFileValidation(unittest.TestCase):
         self._do_test_validate_as_valid('single_valid')
 
     def test_fails_with_invalid_ascii(self):
-        self._do_test_validate_as_invalid('single_invalid-ascii')
+        # when:
+        result = self._do_test_validate_as_invalid('single_invalid-ascii')
+
+        # then:
+        self.assertEqual(1, len(result.errors))
 
     def test_correct_number_of_lines_and_valid_ascii(self):
         self._do_test_validate_as_valid('single_correct-num-lines')
@@ -51,9 +55,11 @@ class TestFastqFileValidation(unittest.TestCase):
     # multiple record tests
 
     def test_validates_ascii_multiple_records(self):
+        # expect:
         self._do_test_validate_as_valid('multiple_valid-ascii')
 
-    def test_invalid_multiple_records(self):
+    def test_invalid_non_matching_lengths(self):
+        # expect:
         self._do_test_validate_as_invalid('multiple_non-matching-lengths')
 
     def test_invalid_multiple_records_with_missing_lines(self):
