@@ -16,6 +16,7 @@ class TestFastqScript(TestCase):
             self.assertEqual("VALID", json_output["validation_state"])
         self._do_test_prints_report(report, json_assert)
 
+    #TODO update to check that errors are also printed
     def test_prints_out_invalid_report(self):
         # expect:
         report = ValidationReport("INVALID")

@@ -15,6 +15,11 @@ class ValidationReport:
     def log_error(self, user_friendly_message):
         self.errors.append(ValidationError(user_friendly_message))
 
+    def to_dict(self):
+        return {
+            "validation_state": self.state
+        }
+
     @staticmethod
     def validation_report_ok():
         report = ValidationReport()

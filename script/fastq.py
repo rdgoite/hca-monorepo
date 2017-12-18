@@ -13,7 +13,7 @@ class Fastq:
 
     def executeOn(self, file_path):
         report = self.validator.validate(file_path)
-        json_value = json.dumps(report.__dict__)
+        json_value = json.dumps(report.to_dict())
         print(json_value)
 
 
