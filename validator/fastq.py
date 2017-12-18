@@ -1,6 +1,6 @@
 import gzip
 
-from common.validationreport import ValidationReport
+from common.validation_report import ValidationReport
 
 
 class Validator:
@@ -25,6 +25,7 @@ class Validator:
     def _validate_source_bytes(self, source):
         valid = True
         record = list()
+        report = ValidationReport("INVALID")
         for line in source:
             if not valid:
                 break
@@ -38,9 +39,11 @@ class Validator:
                     record.clear()
             else:
                 valid = False
+        if len(record) != 0:
+            report.add_error("")
         valid = valid and len(record) == 0
         return ValidationReport.validation_report_ok() if valid \
-        else ValidationReport("INVALID")
+        else report
 
     def _validate_record(self, record):
         valid_identifier = self._validate_identifier_line(record[0])

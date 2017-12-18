@@ -57,7 +57,13 @@ class TestFastqFileValidation(unittest.TestCase):
         self._do_test_validate_as_invalid('multiple_non-matching-lengths')
 
     def test_invalid_multiple_records_with_missing_lines(self):
-        self._do_test_validate_as_invalid('multiple_missing-lines')
+        # when:
+        result = self._do_test_validate_as_invalid('multiple_missing-lines')
+
+        # then:
+        self.assertEqual(1, len(result.errors))
+
+    #TODO define test for when there are blank spaces
 
     def test_validates_spacing_on_multiple_records(self):
         self._do_test_validate_as_invalid('multiple_invalid-spacing')
@@ -71,11 +77,12 @@ class TestFastqFileValidation(unittest.TestCase):
 
     def _do_test_validate_as_valid(self, test_data, extension=None):
         result = self._do_execute_validate(test_data, extension)
-        self.assertEqual("VALID", result.validation_state)
+        self.assertEqual("VALID", result.state)
 
     def _do_test_validate_as_invalid(self, test_data):
         result = self._do_execute_validate(test_data)
-        self.assertEqual("INVALID", result.validation_state)
+        self.assertEqual("INVALID", result.state)
+        return result
 
     def _do_execute_validate(self, test_data, extension=None):
         file_name = "%s.fastq" % (test_data)
