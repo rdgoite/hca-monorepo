@@ -70,19 +70,16 @@ class TestFastqFileValidation(unittest.TestCase):
     # test templates
 
     def _do_test_validate_as_valid(self, test_data, extension=None):
-        assert_valid = lambda result:\
-            self.assertEqual("VALID", result.validation_state)
-        self._do_test_validate(test_data, assert_valid, extension)
+        result = self._do_execute_validate(test_data, extension)
+        self.assertEqual("VALID", result.validation_state)
 
     def _do_test_validate_as_invalid(self, test_data):
-        assert_invalid = lambda result:\
-            self.assertEqual("INVALID", result.validation_state)
-        self._do_test_validate(test_data, assert_invalid)
+        result = self._do_execute_validate(test_data)
+        self.assertEqual("INVALID", result.validation_state)
 
-    def _do_test_validate(self, test_data, assertion, extension=None):
+    def _do_execute_validate(self, test_data, extension=None):
         file_name = "%s.fastq" % (test_data)
         file_path = os.path.join(BASE_DIR, 'test_files', 'fastq', file_name) # $BASE_DIR/test_files/fastq/<file_name>
         if extension:
             file_path = "%s.%s" % (file_path, extension)
-        results = self.validator.validate(os.path.abspath(file_path))
-        assertion(results)
+        return self.validator.validate(os.path.abspath(file_path))
