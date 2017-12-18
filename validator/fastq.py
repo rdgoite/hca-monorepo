@@ -36,9 +36,9 @@ class Validator:
                 record_is_ready = len(record) == 4
                 if record_is_ready:
                     valid = valid and self._validate_record(record)
-                    record.clear()
                     if not valid:
-                        report.log_error("")
+                        report.log_error("Invalid record with sequence id [%s]." % (record[0].decode('utf-8').replace('@', '')))
+                    record.clear()
             else:
                 valid = False
         if len(record) != 0:
@@ -77,7 +77,9 @@ class Validator:
                     has_n_char = True
                 if symbol == ord("."):
                     has_period = True
-        return valid and not has_n_char or not has_period
+            else:
+                break
+        return valid and not (has_n_char and has_period)
 
     def _validate_plus(self, line):
         # is the first char a plus sign?

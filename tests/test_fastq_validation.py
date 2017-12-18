@@ -22,6 +22,8 @@ class TestFastqFileValidation(unittest.TestCase):
 
         # then:
         self.assertEqual(1, len(result.errors))
+        self.assertEqual("Invalid record with sequence id [ERR1821139.3 HS30_21126:4:1101:1699:2070/1].",
+                         result.errors[0].user_friendly_message)
 
     def test_correct_number_of_lines_and_valid_ascii(self):
         self._do_test_validate_as_valid('single_correct-num-lines')
