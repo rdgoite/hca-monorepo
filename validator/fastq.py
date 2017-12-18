@@ -40,7 +40,9 @@ class Validator:
             else:
                 valid = False
         if len(record) != 0:
-            report.add_error("")
+            #TODO consider using error codes instead of actual error messages
+            report.log_error("does not contain a multiple of 4 lines. Please check that the file has "
+                             "not been truncated.")
         valid = valid and len(record) == 0
         return ValidationReport.validation_report_ok() if valid \
         else report

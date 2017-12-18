@@ -62,8 +62,8 @@ class TestFastqFileValidation(unittest.TestCase):
 
         # then:
         self.assertEqual(1, len(result.errors))
-
-    #TODO define test for when there are blank spaces
+        self.assertEqual("does not contain a multiple of 4 lines. Please check that the file has not been truncated.", \
+                         result.errors[0].user_friendly_message)
 
     def test_validates_spacing_on_multiple_records(self):
         self._do_test_validate_as_invalid('multiple_invalid-spacing')

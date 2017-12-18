@@ -12,7 +12,7 @@ class ValidationReport:
     def errors_to_dict(self):
         return [error.to_dict() for error in self.errors]
 
-    def add_error(self, user_friendly_message):
+    def log_error(self, user_friendly_message):
         self.errors.append(ValidationError(user_friendly_message))
 
     @staticmethod
