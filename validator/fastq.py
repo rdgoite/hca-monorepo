@@ -1,6 +1,6 @@
 import gzip
 
-from common.validationreport import ValidationReport
+from common.validation_report import ValidationReport
 
 
 class Validator:
@@ -12,10 +12,7 @@ class Validator:
         self.sequence_symbols = list()
         for symbol in "ACTGN.":
             self.sequence_symbols.append(ord(symbol))
-        self.quality_score_symbols = list()
-        for symbol in "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ\
-            [\]^_`abcdefghijklmnopqrstuvwxyz{|}~":
-            self.quality_score_symbols.append(ord(symbol))
+
 
     def validate(self, file_path):
         try:
@@ -28,6 +25,7 @@ class Validator:
     def _validate_source_bytes(self, source):
         valid = True
         record = list()
+        report = ValidationReport("INVALID")
         for line in source:
             if not valid:
                 break
@@ -38,12 +36,18 @@ class Validator:
                 record_is_ready = len(record) == 4
                 if record_is_ready:
                     valid = valid and self._validate_record(record)
+                    if not valid:
+                        report.log_record_error((record[0][1:].decode('utf-8')))
                     record.clear()
             else:
                 valid = False
+        if len(record) != 0:
+            #TODO consider using error codes instead of actual error messages
+            report.log_error("does not contain a multiple of 4 lines. Please check that the file has "
+                             "not been truncated.")
         valid = valid and len(record) == 0
         return ValidationReport.validation_report_ok() if valid \
-        else ValidationReport("INVALID")
+        else report
 
     def _validate_record(self, record):
         valid_identifier = self._validate_identifier_line(record[0])
@@ -73,7 +77,9 @@ class Validator:
                     has_n_char = True
                 if symbol == ord("."):
                     has_period = True
-        return valid and not has_n_char or not has_period
+            else:
+                break
+        return valid and not (has_n_char and has_period)
 
     def _validate_plus(self, line):
         # is the first char a plus sign?
@@ -82,8 +88,8 @@ class Validator:
 
     def _validate_quality_scores(self, line):
         for symbol in line:
-            if symbol not in self.quality_score_symbols:
-                return False;
+            if not (33 <= symbol <= 126):
+                return False
         return True
 
     def _validate_bases_length_equals_qc_length(self, base_line, qc_line):

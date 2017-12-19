@@ -17,7 +17,13 @@ class TestFastqFileValidation(unittest.TestCase):
         self._do_test_validate_as_valid('single_valid')
 
     def test_fails_with_invalid_ascii(self):
-        self._do_test_validate_as_invalid('single_invalid-ascii')
+        # when:
+        result = self._do_test_validate_as_invalid('single_invalid-ascii')
+
+        # then:
+        self.assertEqual(1, len(result.errors))
+        self.assertEqual("Invalid record with sequence id [ERR1821139.3 HS30_21126:4:1101:1699:2070/1].",
+                         result.errors[0].user_friendly_message)
 
     def test_correct_number_of_lines_and_valid_ascii(self):
         self._do_test_validate_as_valid('single_correct-num-lines')
@@ -51,13 +57,21 @@ class TestFastqFileValidation(unittest.TestCase):
     # multiple record tests
 
     def test_validates_ascii_multiple_records(self):
+        # expect:
         self._do_test_validate_as_valid('multiple_valid-ascii')
 
-    def test_invalid_multiple_records(self):
+    def test_invalid_non_matching_lengths(self):
+        # expect:
         self._do_test_validate_as_invalid('multiple_non-matching-lengths')
 
     def test_invalid_multiple_records_with_missing_lines(self):
-        self._do_test_validate_as_invalid('multiple_missing-lines')
+        # when:
+        result = self._do_test_validate_as_invalid('multiple_missing-lines')
+
+        # then:
+        self.assertEqual(1, len(result.errors))
+        self.assertEqual("does not contain a multiple of 4 lines. Please check that the file has not been truncated.", \
+                         result.errors[0].user_friendly_message)
 
     def test_validates_spacing_on_multiple_records(self):
         self._do_test_validate_as_invalid('multiple_invalid-spacing')
@@ -70,19 +84,17 @@ class TestFastqFileValidation(unittest.TestCase):
     # test templates
 
     def _do_test_validate_as_valid(self, test_data, extension=None):
-        assert_valid = lambda result:\
-            self.assertEqual("VALID", result.validation_state)
-        self._do_test_validate(test_data, assert_valid, extension)
+        result = self._do_execute_validate(test_data, extension)
+        self.assertEqual("VALID", result.state)
 
     def _do_test_validate_as_invalid(self, test_data):
-        assert_invalid = lambda result:\
-            self.assertEqual("INVALID", result.validation_state)
-        self._do_test_validate(test_data, assert_invalid)
+        result = self._do_execute_validate(test_data)
+        self.assertEqual("INVALID", result.state)
+        return result
 
-    def _do_test_validate(self, test_data, assertion, extension=None):
+    def _do_execute_validate(self, test_data, extension=None):
         file_name = "%s.fastq" % (test_data)
         file_path = os.path.join(BASE_DIR, 'test_files', 'fastq', file_name) # $BASE_DIR/test_files/fastq/<file_name>
         if extension:
             file_path = "%s.%s" % (file_path, extension)
-        results = self.validator.validate(os.path.abspath(file_path))
-        assertion(results)
+        return self.validator.validate(os.path.abspath(file_path))
