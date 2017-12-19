@@ -10,22 +10,26 @@ from script.fastq import Fastq
 class TestFastqScript(TestCase):
 
     def test_prints_out_valid_report(self):
-        # expect:
+        # given:
         report = ValidationReport.validation_report_ok()
-        json_assert = lambda json_output: \
-            self.assertEqual("VALID", json_output["validation_state"])
-        self._do_test_prints_report(report, json_assert)
 
-    #TODO update to check that errors are also printed
+        # when:
+        json_output = self._do_execute_print_report(report)
+
+        # then:
+        self.assertEqual("VALID", json_output["validation_state"])
+
     def test_prints_out_invalid_report(self):
-        # expect:
+        # given:
         report = ValidationReport("INVALID")
-        json_assert = lambda json_output: \
-            self.assertEqual("INVALID", json_output["validation_state"])
-        self._do_test_prints_report(report, json_assert)
+        report.log_error("Invalid sequence characters.")
 
+        json_output = self._do_execute_print_report(report)
 
-    def _do_test_prints_report(self, expected_report, json_assert):
+        # then:
+        self.assertEqual("INVALID", json_output["validation_state"])
+
+    def _do_execute_print_report(self, expected_report):
         with patch('validator.fastq.Validator') as validator:
             # given:
             validator.validate.return_value = expected_report
@@ -44,4 +48,4 @@ class TestFastqScript(TestCase):
             # and:
             stdout_value = mock_stdout.getvalue().strip()
             assert stdout_value
-            json_assert(json.loads(stdout_value))
+            return json.loads(stdout_value)
