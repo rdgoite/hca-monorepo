@@ -16,7 +16,7 @@ class ValidationReport:
         self.errors = error_reports if error_reports is not None else list()  # list of ErrorReport
 
     def errors_to_dict(self):
-        return [error.to_dict() for error in self.errors]
+        return [error.__dict__ for error in self.errors]
 
     def log_error(self, user_friendly_message):
         self.errors.append(ValidationError(user_friendly_message))
@@ -26,7 +26,8 @@ class ValidationReport:
 
     def to_dict(self):
         return {
-            "validation_state": self.state
+            "validation_state": self.state,
+            "validation_errors": self.errors_to_dict()
         }
 
     @staticmethod

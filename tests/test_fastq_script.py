@@ -22,12 +22,19 @@ class TestFastqScript(TestCase):
     def test_prints_out_invalid_report(self):
         # given:
         report = ValidationReport("INVALID")
-        report.log_error("Invalid sequence characters.")
+        error_message = "Invalid sequence characters."
+        report.log_error(error_message)
 
         json_output = self._do_execute_print_report(report)
 
         # then:
         self.assertEqual("INVALID", json_output["validation_state"])
+
+        # and:
+        validation_errors = json_output["validation_errors"]
+        self.assertEqual(1, len(validation_errors))
+        self.assertEqual(error_message, validation_errors[0]["user_friendly_message"])
+
 
     def _do_execute_print_report(self, expected_report):
         with patch('validator.fastq.Validator') as validator:
