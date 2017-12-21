@@ -37,7 +37,7 @@ class Validator:
                 if record_is_ready:
                     valid = valid and self._validate_record(record)
                     if not valid:
-                        report.log_record_error((record[0][1:].decode('utf-8')))
+                        report.log_record_error((record[0].decode('utf-8')))
                     record.clear()
             else:
                 valid = False

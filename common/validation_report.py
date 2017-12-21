@@ -7,7 +7,7 @@ class RecordValidationError(ValidationError):
 
     def __init__(self, sequence_id):
         self.sequence_id = sequence_id
-        self.user_friendly_message = "Invalid record with sequence id [%s]." % (sequence_id)
+        self.user_friendly_message = "Invalid sequence characters found in sequence with id %s." % (sequence_id)
 
 class ValidationReport:
 
