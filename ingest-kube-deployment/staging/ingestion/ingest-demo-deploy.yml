@@ -1,0 +1,28 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ingest-demo
+  namespace: staging-environment
+  labels:
+    role: ingestion
+spec:
+  replicas: 1
+  strategy:
+    type: "RollingUpdate"
+  template:
+    metadata:
+      labels:
+        app: ingest-demo
+    spec:
+      containers:
+         - name: ingest-demo
+           imagePullPolicy: Always
+           image: quay.io/humancellatlas/ingest-demo:v0.1.1.rc
+           env:
+             - name: INGEST_API
+               value: http://api.ingest.staging.data.humancellatlas.org:80
+             - name: SCHEMA_URL
+               value: https://raw.githubusercontent.com/HumanCellAtlas/metadata-schema/4.4.0/json_schema/
+           ports:
+             - containerPort: 5000
