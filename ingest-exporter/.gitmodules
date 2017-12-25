@@ -1,0 +1,3 @@
+[submodule "ingest-broker"]
+	path = ingestbroker
+	url = git@github.com:HumanCellAtlas/ingest-broker.git
