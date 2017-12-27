@@ -1,0 +1,42 @@
+subprojects {
+
+    afterEvaluate {
+
+        File dockerFile = file("$projectDir/Dockerfile")
+
+        if (dockerFile.exists()) {
+            task buildDockerImage(type:Exec) {
+                commandLine 'docker', 'build', '-t', "$project.name", '.'
+            }
+        }
+
+    }
+
+}
+
+project(':ingest-kube-deployment') {
+
+    task applyConfig(type:Exec) {
+        def yamlFileNames = [
+                'service-rabbit-deploy.yml',
+                'service-mongo-deploy.yml',
+                'service-ingest-core-deploy.yml',
+                'service-ingest-demo-deploy.yml',
+                'rabbit-deploy.yml',
+                'mongo-deploy.yml',
+                'ingest-core-deploy.yml',
+                'ingest-demo-deploy.yml',
+                'ingest-accessioner-deploy.yml',
+                'ingest-validator-deploy.yml',
+                'ingest-exporter-deploy.yml',
+                'ingest-staging-manager-deploy.yml'
+        ]
+
+        yamlFileNames.each { yaml ->
+            commandLine 'kubectl', 'apply', '-f', "$projectDir/local-dev/ingestion/$yaml"
+        }
+    }
+
+}
+
+
