@@ -30,9 +30,17 @@ def pythonModules = ['ingest-accessioner', 'ingest-broker', 'ingest-exporter',
 configure(subprojects.findAll { it.name in pythonModules }) {
 
     task test(type: Exec) {
-        commandLine 'python3', 'pip', 'install', '-r', 'requirements.txt'
-        commandLine 'python3', 'pip', 'install', 'nose'
-        commandLine 'python3', '-m', 'nose'
+        def testDirectory = file('test')
+        def testsDirectory = file('tests')
+
+        if (testDirectory.exists() || testsDirectory.exists()) {
+            commandLine 'python3', '-m', 'pip', 'install', '-r', 'requirements.txt'
+            commandLine 'python3', '-m', 'pip', 'install', 'nose'
+            commandLine 'python3', '-m', 'nose'
+        } else {
+            commandLine 'echo', '[test] or [tests] directory not found. Testing skipped.'
+        }
+
     }
 
 }
