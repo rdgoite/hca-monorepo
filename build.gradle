@@ -1,3 +1,11 @@
+buildscript {
+
+    repositories {
+        jcenter()
+    }
+
+}
+
 subprojects {
 
     afterEvaluate {
@@ -5,7 +13,7 @@ subprojects {
         File dockerFile = file("$projectDir/Dockerfile")
 
         if (dockerFile.exists()) {
-            task buildDockerImage(type:Exec) {
+            task buildDockerImage(type: Exec) {
                 if (project.pluginManager.hasPlugin('java')) {
                     dependsOn = [build]
                 }
@@ -13,6 +21,18 @@ subprojects {
             }
         }
 
+    }
+
+}
+
+def pythonModules = ['ingest-accessioner', 'ingest-broker', 'ingest-exporter',
+        'ingest-staging-manager', 'ingest-validator']
+configure(subprojects.findAll { it.name in pythonModules }) {
+
+    task test(type: Exec) {
+        commandLine 'python3', 'pip', 'install', '-r', 'requirements.txt'
+        commandLine 'python3', 'pip', 'install', 'nose'
+        commandLine 'python3', '-m', 'nose'
     }
 
 }
@@ -41,5 +61,3 @@ project(':ingest-kube-deployment') {
     }
 
 }
-
-
