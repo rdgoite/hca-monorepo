@@ -34,8 +34,8 @@ configure(subprojects.findAll { it.name in python3Modules }) {
         def testsDirectory = file('tests')
 
         if (testDirectory.exists() || testsDirectory.exists()) {
-            commandLine 'python3', '-m', 'pip', 'install', '-r', 'requirements.txt'
-            commandLine 'python3', '-m', 'pip', 'install', 'nose'
+            commandLine 'python3', '-m', 'pip', 'install', '--user', '-r', 'requirements.txt'
+            commandLine 'python3', '-m', 'pip', 'install', '--user', 'nose'
             commandLine 'python3', '-m', 'nose'
         } else {
             commandLine 'echo', '[test] or [tests] directory not found. Testing skipped.'
