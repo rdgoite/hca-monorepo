@@ -25,9 +25,9 @@ subprojects {
 
 }
 
-def pythonModules = ['ingest-accessioner', 'ingest-broker', 'ingest-exporter',
+def python3Modules = ['ingest-accessioner', 'ingest-exporter',
         'ingest-staging-manager', 'ingest-validator']
-configure(subprojects.findAll { it.name in pythonModules }) {
+configure(subprojects.findAll { it.name in python3Modules }) {
 
     task test(type: Exec) {
         def testDirectory = file('test')
@@ -41,6 +41,16 @@ configure(subprojects.findAll { it.name in pythonModules }) {
             commandLine 'echo', '[test] or [tests] directory not found. Testing skipped.'
         }
 
+    }
+
+}
+
+project(':ingest-broker') {
+
+    task test(type: Exec) {
+        commandLine 'python', '-m', 'pip', 'install', '--user', '-r', 'requirements.txt'
+        commandLine 'python', '-m', 'pip', 'install', '--user', 'nose'
+        commandLine 'python', '-m', 'nose'
     }
 
 }
