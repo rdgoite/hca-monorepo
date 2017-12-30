@@ -25,9 +25,9 @@ subprojects {
 
 }
 
-def python3Modules = ['ingest-accessioner', 'ingest-exporter',
+def python3Projects = ['ingest-accessioner', 'ingest-exporter',
         'ingest-staging-manager', 'ingest-validator']
-configure(subprojects.findAll { it.name in python3Modules }) {
+configure(subprojects.findAll { it.name in python3Projects }) {
 
     task test(type: Exec) {
         def testDirectory = file('test')
