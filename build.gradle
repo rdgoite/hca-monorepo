@@ -16,6 +16,8 @@ subprojects {
             task buildDockerImage(type: Exec) {
                 if (project.pluginManager.hasPlugin('java')) {
                     dependsOn = [build]
+                } else {
+                    dependsOn = [test]
                 }
                 commandLine 'docker', 'build', '-t', "$project.name", '.'
             }
