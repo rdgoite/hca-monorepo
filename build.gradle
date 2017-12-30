@@ -1,3 +1,11 @@
+buildscript {
+
+    repositories {
+        jcenter()
+    }
+
+}
+
 subprojects {
 
     afterEvaluate {
@@ -5,14 +13,46 @@ subprojects {
         File dockerFile = file("$projectDir/Dockerfile")
 
         if (dockerFile.exists()) {
-            task buildDockerImage(type:Exec) {
+            task buildDockerImage(type: Exec) {
                 if (project.pluginManager.hasPlugin('java')) {
                     dependsOn = [build]
+                } else {
+                    dependsOn = [test]
                 }
                 commandLine 'docker', 'build', '-t', "$project.name", '.'
             }
         }
 
+    }
+
+}
+
+def python3Projects = ['ingest-accessioner', 'ingest-exporter',
+        'ingest-staging-manager', 'ingest-validator']
+configure(subprojects.findAll { it.name in python3Projects }) {
+
+    task test(type: Exec) {
+        def testDirectory = file('test')
+        def testsDirectory = file('tests')
+
+        if (testDirectory.exists() || testsDirectory.exists()) {
+            commandLine 'python3', '-m', 'pip', 'install', '--user', '-r', 'requirements.txt'
+            commandLine 'python3', '-m', 'pip', 'install', '--user', 'nose'
+            commandLine 'python3', '-m', 'nose'
+        } else {
+            commandLine 'echo', '[test] or [tests] directory not found. Testing skipped.'
+        }
+
+    }
+
+}
+
+project(':ingest-broker') {
+
+    task test(type: Exec) {
+        commandLine 'python', '-m', 'pip', 'install', '--user', '-r', 'requirements.txt'
+        commandLine 'python', '-m', 'pip', 'install', '--user', 'nose'
+        commandLine 'python', '-m', 'nose'
     }
 
 }
@@ -41,5 +81,3 @@ project(':ingest-kube-deployment') {
     }
 
 }
-
-
