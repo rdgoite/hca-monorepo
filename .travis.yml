@@ -1,7 +1,20 @@
 language: java
+
+matrix:
+    include:
+        language: python
+            python:
+                - "2.7"
+                - "3.6"
+
 sudo: required
 services:
     - docker
+
+branches:
+    only:
+        - master
+        - develop
 
 script: gradle bDI
 
