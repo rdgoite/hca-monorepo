@@ -32,25 +32,26 @@ def python3Projects = ['ingest-accessioner', 'ingest-exporter', 'ingest-fastq-va
 configure(subprojects.findAll { it.name in python3Projects }) {
 
     task test() {
-        def testDirectory = file('test')
-        def testsDirectory = file('tests')
+        doLast {
+            def testDirectory = file('test')
+            def testsDirectory = file('tests')
 
-        if (testDirectory.exists() || testsDirectory.exists()) {
-            exec {
-                commandLine 'python3', '-m', 'pip', 'install', '--user', '-r', 'requirements.txt'
-            }
-            exec {
-                commandLine 'python3', '-m', 'pip', 'install', '--user', 'nose'
-            }
-            exec {
-                commandLine 'python3', '-m', 'nose'
-            }
-        } else {
-            exec {
-                commandLine 'echo', '[test] or [tests] directory not found. Testing skipped.'
+            if (testDirectory.exists() || testsDirectory.exists()) {
+                exec {
+                    commandLine 'python3', '-m', 'pip', 'install', '-r', 'requirements.txt'
+                }
+                exec {
+                    commandLine 'python3', '-m', 'pip', 'install', 'nose'
+                }
+                exec {
+                    commandLine 'python3', '-m', 'nose'
+                }
+            } else {
+                exec {
+                    commandLine 'echo', '[test] or [tests] directory not found. Testing skipped.'
+                }
             }
         }
-
     }
 
 }
@@ -58,14 +59,16 @@ configure(subprojects.findAll { it.name in python3Projects }) {
 project(':ingest-broker') {
 
     task test() {
-        exec {
-            commandLine 'python2.7', '-m', 'pip', 'install', '--user', '-r', 'requirements.txt'
-        }
-        exec {
-            commandLine 'python2.7', '-m', 'pip', 'install', '--user', 'nose'
-        }
-        exec {
-            commandLine 'python2.7', '-m', 'nose'
+        doLast {
+            exec {
+                commandLine 'python2.7', '-m', 'pip', 'install', '--user', '-r', 'requirements.txt'
+            }
+            exec {
+                commandLine 'python2.7', '-m', 'pip', 'install', '--user', 'nose'
+            }
+            exec {
+                commandLine 'python2.7', '-m', 'nose'
+            }
         }
     }
 
