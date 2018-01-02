@@ -16,7 +16,7 @@ branches:
         - master
         - develop
 
-script: gradle bDI
+script: ./gradlew bDI
 
 before_cache:
     - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
