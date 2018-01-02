@@ -38,10 +38,10 @@ configure(subprojects.findAll { it.name in python3Projects }) {
 
             if (testDirectory.exists() || testsDirectory.exists()) {
                 exec {
-                    commandLine 'pip3', 'install', '-r', 'requirements.txt'
+                    commandLine 'pip3.6', 'install', '-r', 'requirements.txt'
                 }
                 exec {
-                    commandLine 'pip3', 'install', 'nose'
+                    commandLine 'pip3.6', 'install', 'nose'
                 }
                 exec {
                     commandLine 'python3', '-m', 'nose'
