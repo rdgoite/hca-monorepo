@@ -27,7 +27,7 @@ subprojects {
 
 }
 
-def python3Projects = ['ingest-accessioner', 'ingest-exporter',
+def python3Projects = ['ingest-accessioner', 'ingest-exporter', 'ingest-fastq-validator',
         'ingest-staging-manager', 'ingest-validator']
 configure(subprojects.findAll { it.name in python3Projects }) {
 
@@ -59,7 +59,7 @@ project(':ingest-broker') {
 
 project(':ingest-kube-deployment') {
 
-    task applyConfig(type:Exec) {
+    task applyConfig(type: Exec) {
         def yamlFileNames = [
                 'service-rabbit-deploy.yml',
                 'service-mongo-deploy.yml',
