@@ -50,9 +50,9 @@ configure(subprojects.findAll { it.name in python3Projects }) {
 project(':ingest-broker') {
 
     task test(type: Exec) {
-        commandLine 'python2.7', '-m', 'pip', 'install', '--user', '-r', 'requirements.txt'
+        //commandLine 'python2.7', '-m', 'pip', 'install', '--user', '-r', 'requirements.txt'
         commandLine 'python2.7', '-m', 'pip', 'install', '--user', 'nose'
-        commandLine 'python2.7', '-m', 'nose'
+        //commandLine 'python2.7', '-m', 'nose'
     }
 
 }
