@@ -16,6 +16,10 @@ branches:
         - master
         - develop
 
+before_script:
+    - python2.7 -m pip --version || wget https://bootstrap.pypa.io/get-pip.py | python2.7
+    - python3 -m pip --version || wget https://bootstrap.pypa.io/get-pip.py | python3
+
 script: python3 -m pip --version
 
 before_cache:
